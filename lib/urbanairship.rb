@@ -12,9 +12,25 @@ module Urbanairship
     require 'timeout'
     Timer = Timeout
   end
+  
+  @attributes ||= {}
 
   class << self
-    attr_accessor :application_key, :application_secret, :master_secret, :logger, :request_timeout
+
+    def self.thread_safe_attr_accessor(*attrs)
+      puts @attributes
+      attrs.each do |attribute|
+        send :define_method, "#{attribute.to_s}=" do |value|
+          @attributes[attribute] = value 
+        end
+        
+        send :define_method, attribute.to_s do 
+          @attributes[attribute]
+        end
+      end
+    end
+
+    thread_safe_attr_accessor :application_key, :application_secret, :master_secret, :logger
 
     def register_device(device_token, options = {})
       body = parse_register_options(options).to_json
@@ -49,6 +65,10 @@ module Urbanairship
       do_request(:get, "/api/device_tokens/feedback/?since=#{format_time(time)}", :authenticate_with => :master_secret)
     end
 
+    def request_timeout=(value)
+      @attributes['request_timeout'] = value
+    end
+
     private
 
     def do_request(http_method, path, options = {})
@@ -57,7 +77,7 @@ module Urbanairship
       klass = Net::HTTP.const_get(http_method.to_s.capitalize)
 
       request = klass.new(path)
-      request.basic_auth @application_key, instance_variable_get("@#{options[:authenticate_with]}")
+      request.basic_auth Urbanairship.application_key, Urbanairship.send("#{options[:authenticate_with]}")
       request.add_field "Content-Type", "application/json"
       request.body = options[:body] if options[:body]
 
@@ -73,7 +93,7 @@ module Urbanairship
     end
 
     def verify_configuration_values(*symbols)
-      absent_values = symbols.select{|symbol| instance_variable_get("@#{symbol}").nil? }
+      absent_values = symbols.select{|symbol| Urbanairship.send(symbol).nil? }
       raise("Must configure #{absent_values.join(", ")} before making this request.") unless absent_values.empty?
     end
 
@@ -114,7 +134,8 @@ module Urbanairship
     end
 
     def request_timeout
-      @request_timeout || 5.0
+      @attributes['request_timeout'] || 5.0
     end
+
   end
 end
