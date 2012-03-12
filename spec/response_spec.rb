@@ -1,5 +1,4 @@
 describe Urbanairship::Response do
-
   before do
     FakeWeb.allow_net_connect = false
   end
