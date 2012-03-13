@@ -1,5 +1,6 @@
 describe "Android" do
   before(:all) do
+    FakeWeb.clean_registry
     FakeWebStubs.android
   end
 
