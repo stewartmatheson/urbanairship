@@ -1,5 +1,6 @@
 describe Urbanairship do
   before(:all) do
+    FakeWeb.clean_registry
     FakeWebStubs.ios
   end
 
