@@ -27,10 +27,12 @@ module Urbanairship
       yield config
       config.raise_if_not_valid :platform
 
-      if config.platform == :ios
+      if config.platform.to_s == "ios"
         Urbanairship::Ios.new config
-      elsif config.platform == :android
+      elsif config.platform.to_s == "android"
         Urbanairship::Android.new config
+      else
+        raise("#{config.platform} is not supported by Urban Airship")
       end
     end
   end
