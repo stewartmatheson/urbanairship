@@ -6,6 +6,7 @@ require File.join(File.dirname(__FILE__), 'urbanairship/response')
 require File.join(File.dirname(__FILE__), 'urbanairship/configuration')
 require File.join(File.dirname(__FILE__), 'urbanairship/client')
 require File.join(File.dirname(__FILE__), 'urbanairship/ios')
+require File.join(File.dirname(__FILE__), 'urbanairship/android')
 
 module Urbanairship
 
