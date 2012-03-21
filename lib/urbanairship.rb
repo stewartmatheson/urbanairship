@@ -20,8 +20,6 @@ module Urbanairship
 
   class << self
 
-    #attr_accessor :application_key, :application_secret, :master_secret, :logger, :request_timeout
-
     def configure
       config = Configuration.new
       yield config
