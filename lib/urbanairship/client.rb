@@ -4,7 +4,7 @@ module Urbanairship
       @configuration = config
     end
   
-    attr_accessor :request_timeout
+    attr_accessor :request_timeout, :configuration
 
     def delete_scheduled_push(param)
       path = param.is_a?(Hash) ? "/api/push/scheduled/alias/#{param[:alias].to_s}" : "/api/push/scheduled/#{param.to_s}"
