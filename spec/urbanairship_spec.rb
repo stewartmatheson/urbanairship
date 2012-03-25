@@ -527,6 +527,20 @@ describe Urbanairship do
       subject.request_timeout = 1.23
       subject.register_device('new_device_token')
     end
+
+    it "should not error if a logger is not set" do
+      Urbanairship::Timer.should_receive(:timeout).with(1.23).and_raise(Timeout::Error)
+
+      client = Urbanairship.configure do |config|
+        config.application_key = "my_app_key"
+        config.application_secret = "my_app_secret"
+        config.master_secret = "my_master_secret"
+        config.platform = :ios
+      end
+      
+      client.request_timeout = 1.23
+      client.register_device('new_device_token')
+    end
   end
 end
 
