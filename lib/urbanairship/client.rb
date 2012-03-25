@@ -54,7 +54,10 @@ module Urbanairship
         Urbanairship::Response.wrap(response)
       end
     rescue Timeout::Error
-      @configuration.logger.error "Urbanairship request timed out after #{request_timeout} seconds: [#{http_method} #{request.path} #{request.body}]"
+      if @configuration.logger
+        @configuration.logger.error "Urbanairship request timed out after #{request_timeout} seconds: [#{http_method} #{request.path} #{request.body}]"
+      end
+
       Urbanairship::Response.wrap(nil, :body => {:error => 'Request timeout'}, :code => '503')
     end
 
